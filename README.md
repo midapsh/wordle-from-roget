@@ -7,7 +7,7 @@
 # The Guy behind this
 - [Link](https://github.com/jonhoo/roget)
 
-# The README.md behind this
+## The README.md behind this
 Original version live-coded [on YouTube](https://youtu.be/doFowk4xj7Q).
 
 The implemented algorithm is almost exactly what was outlined (and
@@ -21,7 +21,7 @@ multiple levels of expected information (again, like 3b1b), instead of
 just hard-coding it like we do at the moment.
 
 
-# Dataset
+## Dataset
 
 If you want to remake `dictionary.txt` yourself, first, make
 `answers.json` by grabbing the words from the [Wordle source code][ny-times]. Then, grab the ngram dataset by
