@@ -7,7 +7,7 @@
 # The Guy behind this
 - [Link](https://github.com/jonhoo/roget)
 
-## The README.md behind this
+# The README.md behind this
 Original version live-coded [on YouTube](https://youtu.be/doFowk4xj7Q).
 
 The implemented algorithm is almost exactly what was outlined (and
