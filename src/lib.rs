@@ -14,7 +14,7 @@ impl Wordle {
             dictionary: HashSet::from_iter(DICTIONARY.lines().map(|line| {
                 line.split_once(' ')
                     .expect("Every line is word + space + frequency")
-                    .1
+                    .0
             })),
         }
     }
@@ -89,8 +89,114 @@ pub trait Guesser {
     fn guess(&mut self, history: &[Guess]) -> String;
 }
 
+impl Guesser for fn(history: &[Guess]) -> String {
+    fn guess(&mut self, history: &[Guess]) -> String {
+        (*self)(history)
+    }
+}
+
 #[cfg(test)]
 mod tests {
+    macro_rules! guesser {
+        (|$history:ident| $impl:block) => {{
+            struct G;
+            impl $crate::Guesser for G {
+                fn guess(&mut self, $history: &[$crate::Guess]) -> String {
+                    $impl
+                }
+            }
+            G
+        }};
+    }
+    mod game {
+        use crate::Wordle;
+
+        #[test]
+        fn test_first_try_match() {
+            // Genius match
+            let w = Wordle::new();
+            let guesser_ = guesser!(|history| { "moved".to_string() });
+            assert_eq!(w.play("moved", guesser_), Some(1));
+        }
+
+        #[test]
+        fn test_second_try_match() {
+            // Magnificent match
+            let w = Wordle::new();
+            let guesser_ = guesser!(|history| {
+                if history.len() == 1 {
+                    "right".to_string()
+                } else {
+                    "wrong".to_string()
+                }
+            });
+            assert_eq!(w.play("right", guesser_), Some(2));
+        }
+
+        #[test]
+        fn test_third_try_match() {
+            // Impressive match
+            let w = Wordle::new();
+            let guesser_ = guesser!(|history| {
+                if history.len() == 2 {
+                    "right".to_string()
+                } else {
+                    "wrong".to_string()
+                }
+            });
+            assert_eq!(w.play("right", guesser_), Some(3));
+        }
+
+        #[test]
+        fn test_fourth_try_match() {
+            // Splendid match
+            let w = Wordle::new();
+            let guesser_ = guesser!(|history| {
+                if history.len() == 3 {
+                    "right".to_string()
+                } else {
+                    "wrong".to_string()
+                }
+            });
+            assert_eq!(w.play("right", guesser_), Some(4));
+        }
+
+        #[test]
+        fn test_fifth_try_match() {
+            // Great match
+            let w = Wordle::new();
+            let guesser_ = guesser!(|history| {
+                if history.len() == 4 {
+                    "right".to_string()
+                } else {
+                    "wrong".to_string()
+                }
+            });
+            assert_eq!(w.play("right", guesser_), Some(5));
+        }
+
+        #[test]
+        fn test_sixth_try_match() {
+            // Phew match
+            let w = Wordle::new();
+            let guesser_ = guesser!(|history| {
+                if history.len() == 5 {
+                    "right".to_string()
+                } else {
+                    "wrong".to_string()
+                }
+            });
+            assert_eq!(w.play("right", guesser_), Some(6));
+        }
+
+        #[test]
+        fn test_no_match_found() {
+            // Oops
+            let w = Wordle::new();
+            let guesser_ = guesser!(|history| { "wrong".to_string() });
+            assert_eq!(w.play("right", guesser_), None);
+        }
+    }
     mod compute {
         use crate::Correctness;
 
